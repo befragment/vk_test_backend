@@ -1,38 +1,50 @@
 from enum import Enum
+from typing import Any
 
 import tarantool
 
+from config import (
+    DB_HOST, DB_PORT, DB_NAME, DB_USER, DB_PASS
+)
 
-class TarantoolTables(str, Enum):
+
+class TarantoolSpaces(str, Enum):
     USERS = 'users'
-    USERDATASTORAGE = 'userdatastorage'
+    
 
+connection = tarantool.Connection(
+    host=DB_HOST, 
+    port=DB_PORT, 
+    user=DB_USER, 
+    password=DB_PASS
+)
 
 def add_user(
-    connection: tarantool.Connection,
-    user: tuple[int, str, str, str]
+    user: tuple[str, str, dict]
 ):
-    connection.insert(space_name=TarantoolTables.USERS, values=user)
-    
-
-def add_userdata(
-    connection: tarantool.Connection, 
-    userdata: tuple[str, dict]
-):
-    connection.insert(space_name='userdatastorage', values=userdata)
-    
+    connection.insert(space_name=TarantoolSpaces.USERS, values=user)
 
 
-conn = tarantool.Connection(host='127.0.0.1',
-                            port=3300,
-                            user='test',
-                            password='test')
 
-tuples = [
-    ('123123', {1: 123, 2: 1203123}),
-    ('87vw8y', {})
-]
+def get_users_space():
+    return connection.select(space_name=TarantoolSpaces.USERS)
 
-for i in tuples:
-    response = conn.insert(space_name='userdatastorage', values=i)
-    print(response[0])
+
+def tokens():
+    return [user[1] for user in get_users_space()]
+
+
+def get_db_row_by_token(token: str):
+    return connection.select(space_name=TarantoolSpaces.USERS, index='token', key=token)
+
+
+def get_userdata_by_token(token: str):
+    return get_db_row_by_token(token)[0][2]
+
+
+def update_data(token: str, data: dict[Any, Any]):
+    row = get_db_row_by_token(token)[0]
+    print("row", row)
+    print("row[2]", row[2])
+    row[2] = data
+    connection.replace(TarantoolSpaces.USERS, row)

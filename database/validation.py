@@ -1,27 +1,26 @@
 from typing import Any
 from pydantic import BaseModel
 
-
 class LoginModel(BaseModel):
     login: str
     password: str
 
 
 class TokenResponseModel(BaseModel):
-    status: str
+    token: str 
 
 
 class UserWriteModel(BaseModel):
-    data: dict[str, Any]
+    data: dict[Any, Any]
 
 
 class ServerStatusResponseModel(BaseModel):
-    status: str
+    status: str = "success"
 
 
 class UserReadRequestModel(BaseModel):
-    keys: list[str]
+    keys: list[Any]
 
 
 class ServerDataResponseModel(BaseModel):
-    data: dict[str, Any]
+    data: dict[Any, Any]
