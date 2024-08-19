@@ -9,7 +9,6 @@ from validation import (
 app = FastAPI()
 
 
-
 async def generate_token(log, passw):
     return log[::-1] + passw[::-2]
 
