@@ -1,23 +1,31 @@
-version: '2'
+version: '3.x'
 
 services:
   tarantool1:
-    image: tarantool/tarantool:latest
-    environment:
-      TARANTOOL_REPLICATION: "tarantool1,tarantool2"
+    build:
+      context: database
     networks:
       - mynet
-    ports:
-      - "3301:3301"
 
-  tarantool2:
-    image: tarantool/tarantool:latest
-    environment:
-      TARANTOOL_REPLICATION: "tarantool1,tarantool2"
-    networks:
-      - mynet
+    container_name: my-tarantool-image
+
     ports:
-      - "3302:3301"
+      - "3302:3302"
+
+  app:
+    build: 
+      context: .
+
+    container_name: app
+
+    depends_on:
+      - tarantool1
+    
+    env_file:
+      - .env
+
+    ports:
+      - "8001:8000"
 
 networks:
   mynet:

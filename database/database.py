@@ -1,10 +1,12 @@
 from enum import Enum
+from sys import stderr
 from typing import Any
 
 import tarantool
+import tarantool.error
 
 from config import (
-    DB_HOST, DB_PORT, DB_NAME, DB_USER, DB_PASS
+    DB_HOST, DB_PORT, DB_USER, DB_PASS
 )
 
 
@@ -12,22 +14,29 @@ class TarantoolSpaces(str, Enum):
     USERS = 'users'
     
 
-connection = tarantool.Connection(
-    host=DB_HOST, 
-    port=DB_PORT, 
-    user=DB_USER, 
-    password=DB_PASS
-)
+
+def yield_session():
+    try:
+        connection = tarantool.Connection(
+            host=DB_HOST, 
+            port=DB_PORT, 
+            user=DB_USER, 
+            password=DB_PASS
+        )
+        return connection
+    except (tarantool.error.NetworkError, ConnectionRefusedError):
+        print("Database connection error.", file=stderr)
+
 
 def add_user(
     user: tuple[str, str, dict]
 ):
-    connection.insert(space_name=TarantoolSpaces.USERS, values=user)
+    yield_session().insert(space_name=TarantoolSpaces.USERS, values=user)
 
 
 
 def get_users_space():
-    return connection.select(space_name=TarantoolSpaces.USERS)
+    return yield_session().select(space_name=TarantoolSpaces.USERS)
 
 
 def tokens():
@@ -35,7 +44,7 @@ def tokens():
 
 
 def get_db_row_by_token(token: str):
-    return connection.select(space_name=TarantoolSpaces.USERS, index='token', key=token)
+    return yield_session().select(space_name=TarantoolSpaces.USERS, index='token', key=token)
 
 
 def get_userdata_by_token(token: str):
@@ -47,4 +56,4 @@ def update_data(token: str, data: dict[Any, Any]):
     print("row", row)
     print("row[2]", row[2])
     row[2] = data
-    connection.replace(TarantoolSpaces.USERS, row)
+    yield_session.replace(TarantoolSpaces.USERS, row)

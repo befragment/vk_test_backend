@@ -1,15 +1,16 @@
 from fastapi import Depends, FastAPI, HTTPException
 from starlette import status
-import tarantool
-import uvicorn
+import tarantool.error
 
 from database.database import add_user, get_userdata_by_token, update_data
+from auth.auth import create_access_token, get_token
+
+
 from database.validation import (
     LoginModel, ServerDataResponseModel, 
     UserReadRequestModel, TokenResponseModel,
     ServerStatusResponseModel, UserWriteModel
 )
-from auth.auth import create_access_token, get_token
 
 app = FastAPI(title="vk tarantool api")
 
@@ -57,13 +58,3 @@ def read(data_to_show: UserReadRequestModel, token: str = Depends(get_token)):
             output_data[key] = user_data[key]
 
     return {"data": output_data}
-
-
-if __name__ == "__main__":
-    uvicorn.run(
-        app='main:app', 
-        host="127.0.0.1", 
-        port=8001, 
-        reload=False, 
-        access_log=False
-    )
