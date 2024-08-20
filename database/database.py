@@ -1,6 +1,7 @@
 from enum import Enum
 from sys import stderr
 from typing import Any
+import logging
 
 import tarantool
 import tarantool.error
@@ -17,20 +18,23 @@ class TarantoolSpaces(str, Enum):
 
 def yield_session():
     try:
+        print(DB_HOST, DB_PASS, DB_USER, DB_PORT)
+        # не смотрите комментарии ниже
         connection = tarantool.Connection(
-            host=DB_HOST, 
-            port=DB_PORT, 
-            user=DB_USER, 
-            password=DB_PASS
+            host=DB_HOST, # 127.0.0.1
+            port=DB_PORT, # 3302 
+            user=DB_USER, # admin 
+            password=DB_PASS # presale
         )
         return connection
-    except (tarantool.error.NetworkError, ConnectionRefusedError):
-        print("Database connection error.", file=stderr)
+    except Exception as e:
+        logging.info("=========", e)
 
 
 def add_user(
     user: tuple[str, str, dict]
 ):
+    # print(yield_session())
     yield_session().insert(space_name=TarantoolSpaces.USERS, values=user)
 
 
