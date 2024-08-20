@@ -16,5 +16,5 @@ users:create_index('token', { type = 'hash', parts = { 2, 'str' }, if_not_exists
 
 box.schema.user.passwd('admin', 'presale')
 log.info("============== admin created")
--- box.schema.user.grant('admin', 'read,write', 'space', 'users')
--- log.info("============== admin granted")
+box.schema.user.grant('admin', 'read,write', 'space', 'users')
+log.info("============== admin granted")
