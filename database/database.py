@@ -18,7 +18,7 @@ class TarantoolSpaces(str, Enum):
 
 def yield_session():
     try:
-        print(DB_HOST, DB_PASS, DB_USER, DB_PORT)
+        logging.warn(DB_HOST, DB_PASS, DB_USER, DB_PORT)
         # не смотрите комментарии ниже
         connection = tarantool.Connection(
             host=DB_HOST, # 127.0.0.1

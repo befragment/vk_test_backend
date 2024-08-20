@@ -3,8 +3,20 @@
 
 ## Для документации я воспользовался встроенной утилитой фреймворка FastApi под названием SwaggerUI
 
+### 1. Запуск приложения через docker
+```bash
+cd database 
+docker build -t my-tarantool-image .
+docker run -d --name my-tarantool-container my-tarantool-image
 
-# 1. Эндпоинты
+cd ..
+docker build . -t app:latest
+docker run -d -p 1234:8000 app 
+
+docker compose build 
+docker compose up
+```
+### 2. Эндпоинты
 Начальная страница с документацией
 ![Image alt](https://github.com/befragment/vk_test_backend/raw/master/docs/swagger_intro.png)
 
@@ -24,4 +36,3 @@
 
 ![Image alt](https://github.com/befragment/vk_test_backend/raw/master/docs/read_endpoint.png)
 
-# 2. 
