@@ -4,7 +4,7 @@
 ## Для документации я воспользовался встроенной утилитой фреймворка FastApi под названием SwaggerUI
 
 
-
+# 1. Эндпоинты
 Начальная страница с документацией
 ![Image alt](https://github.com/befragment/vk_test_backend/raw/master/docs/swagger_intro.png)
 
@@ -19,3 +19,9 @@
 Передали словарь на эндпоинт write, кроме того, мы передали заголовок Authentication c полученным ранее токеном 
 
 ![Image alt](https://github.com/befragment/vk_test_backend/raw/master/docs/write_endpoint.png)
+
+Выбрали из бд значения соответсвующие запрашиваемым ключам
+
+![Image alt](https://github.com/befragment/vk_test_backend/raw/master/docs/read_endpoint.png)
+
+# 2. 
